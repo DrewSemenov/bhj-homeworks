@@ -1,0 +1,8 @@
+.cookie-big {
+  width: 250px;
+}
+
+.clicker__status {
+  display: flex;
+  justify-content: space-between;
+}
