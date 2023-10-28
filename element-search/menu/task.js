@@ -1,4 +1,4 @@
-let menuLink = [...document.querySelectorAll('.menu__link')].filter(
+const menuLink = [...document.querySelectorAll('.menu__link')].filter(
   (el) => el.nextElementSibling
 );
 
