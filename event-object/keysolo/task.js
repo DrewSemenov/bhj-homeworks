@@ -4,10 +4,16 @@ class Game {
     this.wordElement = container.querySelector('.word');
     this.winsElement = container.querySelector('.status__wins');
     this.lossElement = container.querySelector('.status__loss');
+    this.timeElement = container.querySelector('.time-left');
+    this.body = document.querySelector('body');
+
+    this.timerId = null;
 
     this.reset();
 
     this.registerEvents();
+
+    this.startTimer();
   }
 
   reset() {
@@ -25,10 +31,40 @@ class Game {
       При неправильном вводе символа - this.fail();
       DOM-элемент текущего символа находится в свойстве this.currentSymbol.
      */
+
+    this.body.addEventListener('keypress', (event) => {
+      const userSymbol = event.key.toLowerCase();
+      const currentSymbol = this.currentSymbol.textContent.toLowerCase();
+
+      if (userSymbol === currentSymbol) {
+        this.success();
+      } else {
+        this.fail();
+      }
+    });
+  }
+
+  startTimer() {
+    if (this.timerId) {
+      clearInterval(this.timerId);
+    }
+
+    const seconds = this.wordElement.textContent.length;
+    this.timeElement.textContent = seconds;
+
+    const timer = () => {
+      this.timeElement.textContent--;
+      if (!+this.timeElement.textContent) {
+        this.fail();
+      }
+    };
+
+    this.timerId = setInterval(timer, 1000);
   }
 
   success() {
-    if(this.currentSymbol.classList.contains("symbol_current")) this.currentSymbol.classList.remove("symbol_current");
+    if (this.currentSymbol.classList.contains('symbol_current'))
+      this.currentSymbol.classList.remove('symbol_current');
     this.currentSymbol.classList.add('symbol_correct');
     this.currentSymbol = this.currentSymbol.nextElementSibling;
 
@@ -56,6 +92,8 @@ class Game {
     const word = this.getWord();
 
     this.renderWord(word);
+
+    this.startTimer();
   }
 
   getWord() {
@@ -70,7 +108,7 @@ class Game {
         'popcorn',
         'cinema',
         'love',
-        'javascript'
+        'javascript',
       ],
       index = Math.floor(Math.random() * words.length);
 
@@ -81,7 +119,7 @@ class Game {
     const html = [...word]
       .map(
         (s, i) =>
-          `<span class="symbol ${i === 0 ? 'symbol_current': ''}">${s}</span>`
+          `<span class="symbol ${i === 0 ? 'symbol_current' : ''}">${s}</span>`
       )
       .join('');
     this.wordElement.innerHTML = html;
@@ -90,5 +128,5 @@ class Game {
   }
 }
 
-new Game(document.getElementById('game'))
+new Game(document.getElementById('game'));
 
