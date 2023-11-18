@@ -23,17 +23,9 @@ class Game {
   }
 
   registerEvents() {
-    /*
-      TODO:
-      Написать обработчик события, который откликается
-      на каждый введённый символ.
-      В случае правильного ввода слова вызываем this.success()
-      При неправильном вводе символа - this.fail();
-      DOM-элемент текущего символа находится в свойстве this.currentSymbol.
-     */
-
     this.body.addEventListener('keypress', (event) => {
-      const userSymbol = event.key.toLowerCase();
+      const userSymbol = [...event.code].at(-1).toLowerCase();
+      console.log(userSymbol);
       const currentSymbol = this.currentSymbol.textContent.toLowerCase();
 
       if (userSymbol === currentSymbol) {
