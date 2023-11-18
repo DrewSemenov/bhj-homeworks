@@ -25,7 +25,6 @@ class Game {
   registerEvents() {
     this.body.addEventListener('keypress', (event) => {
       const userSymbol = [...event.code].at(-1).toLowerCase();
-      console.log(userSymbol);
       const currentSymbol = this.currentSymbol.textContent.toLowerCase();
 
       if (userSymbol === currentSymbol) {
