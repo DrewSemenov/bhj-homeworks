@@ -1,39 +1,54 @@
 class BookReader {
   constructor() {
     this.book = document.querySelector('.book');
-    this.bookControlsContainer = this.book.querySelector('.book__controls');
-    this.bookControlsFontSize =
-      this.bookControlsContainer.querySelectorAll('.font-size');
+    this.bookControls = this.book.querySelector('.book__controls');
+    this.fontSizeControls = this.bookControls.querySelectorAll('.font-size');
 
-    this.bookControlsContainer.addEventListener(
+    this.bookControls.addEventListener(
       'click',
-      this.eventHandler.bind(this)
+      this.controlsHandler.bind(this)
     );
 
     this.fontSize = 'normal';
   }
 
-  eventHandler(event) {
-    const fontSizeControl = event.target.closest('.font-size');
+  formatDataValue(value) {
+    const arrValue = value.split('-');
+    arrValue[1] = arrValue[1].at(0).toUpperCase() + arrValue[1].slice(1);
 
-    if (fontSizeControl) {
-      event.preventDefault();
+    return arrValue.join('') + 'Handler';
+  }
 
-      const newFontSize = fontSizeControl.dataset.size;
+  controlsHandler(event) {
+    event.preventDefault();
 
-      this.book.classList.replace(
-        `book_fs-${this.fontSize}`,
-        `book_fs-${newFontSize}`
-      );
+    const target = event.target.closest('.book__control');
 
-      this.fontSize = newFontSize;
+    if (target) {
+      const targetData = target.dataset.controls;
+      const targetMethod = this.formatDataValue(targetData);
 
-      this.bookControlsFontSize.forEach((el) => {
-        el.classList.remove('font-size_active');
-      });
-
-      fontSizeControl.classList.add('font-size_active');
+      this[targetMethod](event.target.closest(`.${targetData}`));
     }
+  }
+
+  fontSizeHandler(target) {
+    const fontSizeControl = target;
+
+    const newFontSize = fontSizeControl.dataset.size;
+
+    this.book.classList.replace(
+      `book_fs-${this.fontSize}`,
+      `book_fs-${newFontSize}`
+    );
+
+    this.fontSize = newFontSize;
+
+    this.fontSizeControls.forEach((el) => {
+      el.classList.remove('font-size_active');
+    });
+
+    fontSizeControl.classList.add('font-size_active');
   }
 }
 
