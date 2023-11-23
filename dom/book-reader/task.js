@@ -20,16 +20,20 @@ class BookReader {
   }
 
   controlsHandler(event) {
+    const linkControl = event.target.closest('a');
+
+    if (!linkControl) {
+      return;
+    }
+
     event.preventDefault();
 
     const target = event.target.closest('.book__control');
 
-    if (target) {
-      const targetData = target.dataset.controls;
-      const targetMethod = this.formatDataValue(targetData);
+    const targetData = target.dataset.controls;
+    const methodName = this.formatDataValue(targetData);
 
-      this[targetMethod](event.target.closest(`.${targetData}`));
-    }
+    this[methodName] && this[methodName](linkControl);
   }
 
   fontSizeHandler(target) {
