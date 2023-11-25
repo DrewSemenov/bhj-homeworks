@@ -28,7 +28,7 @@ class ChatWidget {
   sendMessage(event) {
     this.timerId && clearTimeout(this.timerId);
 
-    if (event.code !== 'Enter') {
+    if (!['Enter', 'NumpadEnter'].includes(event.code)) {
       return;
     }
     if (!event.currentTarget.checkValidity()) {
@@ -36,7 +36,7 @@ class ChatWidget {
     }
 
     this.printMessage(event.currentTarget.value);
-    setTimeout(this.printMessage.bind(this), 1000);
+    setTimeout(this.printMessage.bind(this), 100);
 
     event.currentTarget.value = '';
   }
@@ -51,6 +51,8 @@ class ChatWidget {
     <div class="message__text">${message}</div>
 </div>
     `;
+
+    this.messages.scrollIntoView(false);
   }
 
   getAnswer() {
