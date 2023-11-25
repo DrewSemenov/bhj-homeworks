@@ -5,11 +5,14 @@ class ChatWidget {
     this.chatWidgetInput = this.chatWidget.querySelector('.chat-widget__input');
     this.messages = this.chatWidget.querySelector('.chat-widget__messages');
 
+    this.timerId = null;
+
     this.chatWidgetSide.addEventListener('click', this.chatOpen.bind(this));
     this.chatWidgetInput.addEventListener(
       'keypress',
       this.sendMessage.bind(this)
     );
+    this.chatWidgetInput.addEventListener('focus', this.chatFocus.bind(this));
   }
 
   chatOpen() {
@@ -17,7 +20,13 @@ class ChatWidget {
     this.chatWidgetInput.focus();
   }
 
+  chatFocus() {
+    this.timerId = setTimeout(this.printMessage.bind(this), 500);
+  }
+
   sendMessage(event) {
+    this.timerId && clearTimeout(this.timerId);
+
     if (event.code !== 'Enter') {
       return;
     }
