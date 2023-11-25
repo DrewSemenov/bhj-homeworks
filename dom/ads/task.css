@@ -6,4 +6,12 @@
   display: inline;
 }
 
+.content {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 50%;
+}
 
