@@ -29,10 +29,11 @@ class BookReader {
   }
 
   formatDataValue(value) {
-    const arrValue = value.split('-');
-    arrValue[1] = arrValue[1].at(0).toUpperCase() + arrValue[1].slice(1);
+    const formatValue = value.split('-');
+    formatValue[1] =
+      formatValue[1].at(0).toUpperCase() + formatValue[1].slice(1);
 
-    return arrValue.join('') + 'Handler';
+    return formatValue.join('') + 'Handler';
   }
 
   controlsHandler(event) {
@@ -45,7 +46,6 @@ class BookReader {
     event.preventDefault();
 
     const target = event.target.closest('.book__control');
-
     const targetData = target.dataset.controls;
     const HandlerName = this.formatDataValue(targetData);
 
@@ -54,9 +54,7 @@ class BookReader {
 
   fontSizeHandler(target) {
     this.book.classList.remove(`book_fs-${this.fontSize}`);
-
     this.fontSize = target.dataset.size;
-
     this.book.classList.add(`book_fs-${this.fontSize}`);
 
     this.changeActiveClass(this.fontSizeControls, 'font-size_active', target);
@@ -64,9 +62,7 @@ class BookReader {
 
   textColorHandler(target) {
     this.book.classList.remove(`book_color-${this.textColor}`);
-
     this.textColor = target.dataset.textColor;
-
     this.book.classList.add(`book_color-${this.textColor}`);
 
     this.changeActiveClass(this.textColorControls, 'color_active', target);
@@ -74,9 +70,7 @@ class BookReader {
 
   bgColorHandler(target) {
     this.book.classList.remove(`book_bg-${this.bgColor}`);
-
     this.bgColor = target.dataset.bgColor;
-
     this.book.classList.add(`book_bg-${this.bgColor}`);
 
     this.changeActiveClass(this.bgColorControls, 'color_active', target);
