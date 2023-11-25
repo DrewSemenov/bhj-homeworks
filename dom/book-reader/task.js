@@ -4,9 +4,11 @@ class BookReader {
     this.bookControls = this.book.querySelector('.book__controls');
     this.fontSizeControls = this.bookControls.querySelectorAll('.font-size');
     this.textColorControls = this.book.querySelectorAll(
-      '[class*="text_color"]'
+      ':scope [class*="text_color"]'
     );
-    this.bgColorControls = this.book.querySelectorAll('[class*="bg_color"]');
+    this.bgColorControls = this.book.querySelectorAll(
+      ':scope [class*="bg_color"]'
+    );
 
     this.bookControls.addEventListener(
       'click',
