@@ -3,12 +3,10 @@ class BookReader {
     this.book = document.querySelector('#book');
     this.bookControls = this.book.querySelector('.book__controls');
     this.fontSizeControls = this.bookControls.querySelectorAll('.font-size');
-    this.fontColorControls = this.book
-      .querySelector('.book__control_color')
-      .querySelectorAll('.color');
-    this.bgColorControls = this.book
-      .querySelector('.book__control_background')
-      .querySelectorAll('.color');
+    this.textColorControls = this.book.querySelectorAll(
+      '[class*="text_color"]'
+    );
+    this.bgColorControls = this.book.querySelectorAll('[class*="bg_color"]');
 
     this.bookControls.addEventListener(
       'click',
@@ -16,7 +14,7 @@ class BookReader {
     );
 
     this.fontSize = 'normal';
-    this.fontColor = 'black';
+    this.textColor = 'black';
     this.bgColor = 'white';
 
     this.applyDefaultParams();
@@ -25,7 +23,7 @@ class BookReader {
   applyDefaultParams() {
     this.book.classList.add(
       `book_fs-${this.fontSize}`,
-      `book_color-${this.fontColor}`,
+      `book_color-${this.textColor}`,
       `book_bg-${this.bgColor}`
     );
   }
@@ -49,9 +47,9 @@ class BookReader {
     const target = event.target.closest('.book__control');
 
     const targetData = target.dataset.controls;
-    const methodName = this.formatDataValue(targetData);
+    const HandlerName = this.formatDataValue(targetData);
 
-    this[methodName] && this[methodName](linkControl);
+    this[HandlerName] && this[HandlerName](linkControl);
   }
 
   fontSizeHandler(target) {
@@ -64,17 +62,17 @@ class BookReader {
     this.changeActiveClass(this.fontSizeControls, 'font-size_active', target);
   }
 
-  fontColorHandler(target) {
-    this.book.classList.remove(`book_color-${this.fontColor}`);
+  textColorHandler(target) {
+    this.book.classList.remove(`book_color-${this.textColor}`);
 
-    this.fontColor = target.dataset.textColor;
+    this.textColor = target.dataset.textColor;
 
-    this.book.classList.add(`book_color-${this.fontColor}`);
+    this.book.classList.add(`book_color-${this.textColor}`);
 
-    this.changeActiveClass(this.fontColorControls, 'color_active', target);
+    this.changeActiveClass(this.textColorControls, 'color_active', target);
   }
 
-  backgroundColorHandler(target) {
+  bgColorHandler(target) {
     this.book.classList.remove(`book_bg-${this.bgColor}`);
 
     this.bgColor = target.dataset.bgColor;
