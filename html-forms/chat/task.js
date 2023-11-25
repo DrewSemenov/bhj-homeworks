@@ -8,11 +8,12 @@ class ChatWidget {
     this.timerId = null;
 
     this.chatWidgetSide.addEventListener('click', this.chatOpen.bind(this));
+
+    this.chatWidgetInput.addEventListener('focus', this.chatFocus.bind(this));
     this.chatWidgetInput.addEventListener(
       'keypress',
       this.sendMessage.bind(this)
     );
-    this.chatWidgetInput.addEventListener('focus', this.chatFocus.bind(this));
   }
 
   chatOpen() {
@@ -21,7 +22,7 @@ class ChatWidget {
   }
 
   chatFocus() {
-    this.timerId = setTimeout(this.printMessage.bind(this), 500);
+    this.timerId = setTimeout(this.printMessage.bind(this), 30000);
   }
 
   sendMessage(event) {
