@@ -28,6 +28,11 @@ class Tooltip {
 
     event.preventDefault();
 
+    if (linkHasTooltip.nextElementSibling === this.tooltip) {
+      this.hideTooltip();
+      return;
+    }
+
     this.addTooltip(linkHasTooltip);
   }
 
@@ -48,7 +53,7 @@ class Tooltip {
   }
 
   hideTooltip() {
-    this.tooltip.classList.remove(this.tooltipClassActive);
+    this.tooltip.remove();
   }
 
   scrollPositionTooltip() {
@@ -61,3 +66,4 @@ class Tooltip {
 }
 
 const tooltip = new Tooltip();
+
