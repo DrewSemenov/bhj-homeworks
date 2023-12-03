@@ -1,11 +1,19 @@
 class Cart {
-  cartProducts = document.querySelector('.cart__products');
+  cart = document.querySelector('.cart');
+  cartProducts = this.cart.querySelector('.cart__products');
   products = document.querySelector('.products');
 
-  productsArray = [];
+  cartProductsArray = localStorage.cartProducts
+    ? JSON.parse(localStorage.cartProducts)
+    : [];
 
   constructor() {
+    this.startApp();
+  }
+
+  startApp() {
     this.registerEvent();
+    this.renderCartProducts();
   }
 
   registerEvent() {
@@ -59,7 +67,7 @@ class Cart {
       count: productCount.textContent,
     };
 
-    const productInCart = this.productsArray.find(
+    const productInCart = this.cartProductsArray.find(
       (elem) => elem.id === productObj.id
     );
 
@@ -67,7 +75,7 @@ class Cart {
       productInCart.count =
         Number(productInCart.count) + Number(productObj.count);
     } else {
-      this.productsArray.push(productObj);
+      this.cartProductsArray.push(productObj);
     }
 
     productCount.textContent = 1;
@@ -76,13 +84,21 @@ class Cart {
   }
 
   renderCartProducts() {
-    this.cartProducts.innerHTML = '';
-    this.productsArray.forEach((product) => {
-      this.cartProducts.insertAdjacentHTML(
-        'beforeend',
-        this.getProductHtml(product)
-      );
-    });
+    if (!this.cartProductsArray.length) {
+      this.cart.hidden = true;
+    } else {
+      this.cart.hidden = false;
+
+      this.cartProducts.innerHTML = '';
+      this.cartProductsArray.forEach((product) => {
+        this.cartProducts.insertAdjacentHTML(
+          'beforeend',
+          this.getProductHtml(product)
+        );
+      });
+    }
+
+    this.saveCartProducts();
   }
 
   getProductHtml({ id, src, count }) {
@@ -101,11 +117,15 @@ class Cart {
     if (!removeButton) return;
 
     const targetId = removeButton.closest('.cart__product').dataset.id;
-    this.productsArray = this.productsArray.filter(
+    this.cartProductsArray = this.cartProductsArray.filter(
       (product) => product.id !== targetId
     );
 
     this.renderCartProducts();
+  }
+
+  saveCartProducts() {
+    localStorage.cartProducts = JSON.stringify(this.cartProductsArray);
   }
 }
 
