@@ -27,6 +27,7 @@ class Cart {
     const controlsButton = event.target.closest('.product__quantity-control');
     if (controlsButton) {
       this.controlsClick(controlsButton);
+      return;
     }
 
     const addButton = event.target.closest('.product__add');
