@@ -1,13 +1,23 @@
 class ToDoList {
-  content = document.querySelector('.content');
-  tasksInput = this.content.querySelector('.tasks__input');
-  tasksList = this.content.querySelector('.tasks__list');
   form = document.forms[0];
+  content = document.querySelector('.content');
+  tasksList = this.content.querySelector('.tasks__list');
+  tasksInput = this.content.querySelector('.tasks__input');
 
-  list = [];
+  tasksArray = localStorage.tasksArray
+    ? JSON.parse(localStorage.tasksArray)
+    : [];
 
   constructor() {
+    this.startApp();
+  }
+
+  startApp() {
     this.registerEvent();
+
+    if (this.tasksArray.length) {
+      this.renderTasks();
+    }
   }
 
   registerEvent() {
@@ -15,23 +25,51 @@ class ToDoList {
     this.tasksList.addEventListener('click', (event) => this.deleteTask(event));
   }
 
+  renderTasks() {
+    this.tasksArray.forEach((task) => this.addTask(task, false));
+  }
+
+  saveTasksToStorage(task) {
+    if (task) {
+      this.tasksArray.push(task);
+    }
+
+    localStorage.tasksArray = JSON.stringify(this.tasksArray);
+  }
+
   submitEvent(event) {
     event.preventDefault();
 
     const task = this.tasksInput.value.trim();
 
-    if (!task) return;
+    if (task) {
+      this.addTask(task);
+    } else {
+      this.showError();
+    }
 
-    this.addTask(task);
     this.clearInput();
   }
 
-  addTask(task) {
+  showError() {
+    this.tasksInput.classList.add('tasks__input_error');
+    this.tasksInput.placeholder = 'Невозможно добавить пустую задачу';
+
+    setTimeout(() => {
+      this.tasksInput.classList.remove('tasks__input_error');
+      this.tasksInput.placeholder = 'Введите название новой задачи';
+    }, 1000);
+  }
+
+  addTask(task, save = true) {
     const taskElement = document.createElement('div');
     taskElement.classList.add('task');
     taskElement.innerHTML = this.getTaskHtml(task);
-
     this.tasksList.append(taskElement);
+
+    if (save) {
+      this.saveTasksToStorage(task);
+    }
   }
 
   getTaskHtml(task) {
@@ -56,8 +94,12 @@ class ToDoList {
     if (!buttonDelete) return;
 
     const task = buttonDelete.closest('.task');
+    const index = [...this.tasksList.children].indexOf(task);
 
     task.remove();
+
+    this.tasksArray.splice(index, 1);
+    this.saveTasksToStorage();
   }
 }
 
