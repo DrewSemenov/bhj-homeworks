@@ -10,13 +10,20 @@ body {
 .cart__product {
   position: relative;
 }
-.cart__product-count {
+.cart__product-count,
+.cart__product-remove {
   position: absolute;
   top: 0;
   right: 0;
   border: 2px solid green;
   border-radius: 50%;
   padding: 2px 5px;
+}
+
+.cart__product-remove {
+  top: inherit;
+  bottom: 0;
+  border-color: red;
 }
 
 .cart__product-image {
@@ -89,3 +96,4 @@ body {
 .product-shadow {
   position: absolute;
 }
+

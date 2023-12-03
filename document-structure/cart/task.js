@@ -10,6 +10,9 @@ class Cart {
 
   registerEvent() {
     this.products.addEventListener('click', (event) => this.clickEvent(event));
+    this.cartProducts.addEventListener('click', (event) =>
+      this.removeProductFromCart(event)
+    );
   }
 
   clickEvent(event) {
@@ -56,21 +59,30 @@ class Cart {
       count: productCount.textContent,
     };
 
-    const productInCart = this.cartProducts.querySelector(
-      `[data-id="${productObj.id}"]`
+    const productInCart = this.productsArray.find(
+      (elem) => elem.id === productObj.id
     );
 
     if (productInCart) {
-      const countElement = productInCart.querySelector('.cart__product-count');
-      countElement.textContent =
-        Number(countElement.textContent) + Number(productObj.count);
+      productInCart.count =
+        Number(productInCart.count) + Number(productObj.count);
     } else {
       this.productsArray.push(productObj);
-      const productElement = this.getProductHtml(productObj);
-      this.cartProducts.insertAdjacentHTML('beforeend', productElement);
     }
 
     productCount.textContent = 1;
+
+    this.renderCartProducts();
+  }
+
+  renderCartProducts() {
+    this.cartProducts.innerHTML = '';
+    this.productsArray.forEach((product) => {
+      this.cartProducts.insertAdjacentHTML(
+        'beforeend',
+        this.getProductHtml(product)
+      );
+    });
   }
 
   getProductHtml({ id, src, count }) {
@@ -78,8 +90,22 @@ class Cart {
     <div class="cart__product" data-id=${id}>
       <img class="cart__product-image" src=${src}>
       <div class="cart__product-count">${count}</div>
+      <button class="cart__product-remove">&times;</button>
     </div>
     `;
+  }
+
+  removeProductFromCart(event) {
+    const removeButton = event.target.closest('.cart__product-remove');
+
+    if (!removeButton) return;
+
+    const targetId = removeButton.closest('.cart__product').dataset.id;
+    this.productsArray = this.productsArray.filter(
+      (product) => product.id !== targetId
+    );
+
+    this.renderCartProducts();
   }
 }
 
