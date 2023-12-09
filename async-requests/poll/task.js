@@ -1,8 +1,11 @@
 class Poll {
   card = document.querySelector('.card');
   container = document.querySelector('.poll');
+  pollTitle = document.querySelector('#poll__title');
+  pollAnswers = document.querySelector('#poll__answers');
 
   poll = null;
+  pollStats = null;
   confirmElement = null;
 
   constructor() {
@@ -24,6 +27,7 @@ class Poll {
     if (!answerButton) return;
 
     this.showConfirmWindow();
+    this.poll.answerId = answerButton.dataset.id;
   }
 
   showConfirmWindow() {
@@ -35,7 +39,7 @@ class Poll {
     if (!messageClose) return;
 
     this.confirmElement.close();
-    this.getPoll();
+    this.getPollStats(this.poll);
   }
 
   async getPoll() {
@@ -52,16 +56,15 @@ class Poll {
   }
 
   renderPoll() {
-    this.container.innerHTML = this.getPollHtml();
+    this.pollTitle.textContent = this.poll.data.title;
+    this.pollAnswers.innerHTML = this.getPollHtml();
   }
 
   getPollHtml() {
-    let html = `
-    <div class="poll__title" id="poll__title">${this.poll.data.title}</div>
-    `;
-    this.poll.data.answers.forEach((answer) => {
+    let html = ``;
+    this.poll.data.answers.forEach((answer, index) => {
       html += `
-      <button class="poll__answer">${answer}</button>
+      <button class="poll__answer" data-id="${index}">${answer}</button>
       `;
     });
 
@@ -86,6 +89,48 @@ class Poll {
     this.confirmElement.addEventListener('click', (event) =>
       this.closeConfirmWindow(event)
     );
+  }
+
+  async getPollStats({ id, answerId }) {
+    const url = 'https://students.netoservices.ru/nestjs-backend/poll';
+    const result = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/x-www-form-urlencoded' },
+      body: `vote=${id}&answer=${answerId}`,
+    });
+
+    this.pollStats = await result.json();
+    this.renderPollStats();
+  }
+
+  renderPollStats() {
+    this.pollAnswers.innerHTML = '';
+
+    this.container.append(this.getPollStatsHtml());
+  }
+
+  getPollStatsHtml() {
+    const stats = this.pollStats.stat;
+    stats.sort((a, b) => b.votes - a.votes);
+
+    const allVotes = stats.reduce((acc, elem) => acc + elem.votes, 0);
+
+    let html = '';
+    stats.forEach((stat) => {
+      const percent = ((stat.votes / allVotes) * 100).toFixed(2);
+      html += `
+      <div class="stat">
+        <span class="stat-answer">${stat.answer}:</span>
+        <span class="stat-votes">${percent}%</span>
+      </div>
+      `;
+    });
+
+    const result = document.createElement('div');
+    result.classList.add('stats');
+    result.innerHTML = html;
+
+    return result;
   }
 }
 

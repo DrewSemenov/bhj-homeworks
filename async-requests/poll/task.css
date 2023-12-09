@@ -33,7 +33,7 @@ body {
 }
 
 .confirm-controls {
-  padding: 20px;
+  padding: 10px;
   display: flex;
 }
 
@@ -43,6 +43,14 @@ body {
   border: none;
 
   margin-left: auto;
+}
+
+.stat + .stat {
+  margin-top: 5px;
+}
+
+.stat-votes {
+  font-weight: bold;
 }
 
 ::backdrop {
