@@ -15,7 +15,13 @@ class Poll {
   startApp() {
     this.getPoll();
     this.registerEvents();
+    this.createElements();
+  }
+
+  createElements() {
+    this.createNewPollButton();
     this.createMessageElement();
+    this.createPollStatsElement();
   }
 
   registerEvents() {
@@ -35,11 +41,13 @@ class Poll {
   }
 
   closeConfirmWindow(event) {
-    const messageClose = event.target.closest('.confirm-button');
+    const messageClose = event.target.closest('.btn-confirm');
     if (!messageClose) return;
 
     this.confirmElement.close();
     this.getPollStats(this.poll);
+
+    this.buttonNewPoll.hidden = false;
   }
 
   async getPoll() {
@@ -56,6 +64,10 @@ class Poll {
   }
 
   renderPoll() {
+    this.pollStatsElement.innerHTML = '';
+    this.pollStatsElement.hidden = true;
+    this.buttonNewPoll.hidden = true;
+
     this.pollTitle.textContent = this.poll.data.title;
     this.pollAnswers.innerHTML = this.getPollHtml();
   }
@@ -79,7 +91,7 @@ class Poll {
       Спасибо, ваш голос засчитан!
       </div>
       <div class="confirm-controls">
-      <button class="confirm-button" autofocus>Закрыть</button>
+      <button class="btn btn-confirm" autofocus>Закрыть</button>
       </div>
       `;
 
@@ -89,6 +101,28 @@ class Poll {
     this.confirmElement.addEventListener('click', (event) =>
       this.closeConfirmWindow(event)
     );
+  }
+
+  createNewPollButton() {
+    const button = document.createElement('button');
+    button.classList.add('btn', 'btn-new-poll');
+    button.textContent = 'Новый вопрос';
+    button.hidden = true;
+
+    this.buttonNewPoll = button;
+
+    this.card.append(this.buttonNewPoll);
+
+    this.buttonNewPoll.addEventListener('click', () => this.getPoll());
+  }
+
+  createPollStatsElement() {
+    const element = document.createElement('div');
+    element.classList.add('stats');
+    element.hidden = true;
+    this.pollStatsElement = element;
+
+    this.container.append(this.pollStatsElement);
   }
 
   async getPollStats({ id, answerId }) {
@@ -106,31 +140,29 @@ class Poll {
   renderPollStats() {
     this.pollAnswers.innerHTML = '';
 
-    this.container.append(this.getPollStatsHtml());
+    this.pollStatsElement.hidden = false;
+    this.pollStatsElement.innerHTML = this.getPollStatsHtml();
   }
 
   getPollStatsHtml() {
     const stats = this.pollStats.stat;
-    stats.sort((a, b) => b.votes - a.votes);
-
+    const answer = stats[this.poll.answerId].answer;
     const allVotes = stats.reduce((acc, elem) => acc + elem.votes, 0);
+
+    stats.sort((a, b) => b.votes - a.votes);
 
     let html = '';
     stats.forEach((stat) => {
       const percent = ((stat.votes / allVotes) * 100).toFixed(2);
       html += `
-      <div class="stat">
+      <div class="stat ${stat.answer === answer && 'answer-selected'}">
         <span class="stat-answer">${stat.answer}:</span>
         <span class="stat-votes">${percent}%</span>
       </div>
       `;
     });
 
-    const result = document.createElement('div');
-    result.classList.add('stats');
-    result.innerHTML = html;
-
-    return result;
+    return html;
   }
 }
 

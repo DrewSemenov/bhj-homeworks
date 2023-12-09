@@ -17,6 +17,13 @@ body {
   margin-bottom: 20px;
 }
 
+.btn {
+  cursor: pointer;
+  border: none;
+
+  background: inherit;
+}
+
 .confirm {
   margin: auto;
   padding: 0;
@@ -37,10 +44,8 @@ body {
   display: flex;
 }
 
-.confirm-button {
-  cursor: pointer;
+.btn-confirm {
   color: blue;
-  border: none;
 
   margin-left: auto;
 }
@@ -51,6 +56,21 @@ body {
 
 .stat-votes {
   font-weight: bold;
+}
+
+.answer-selected {
+  background-color: rgb(220, 233, 217);
+}
+
+.btn-new-poll {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 5px;
+
+  background: rgb(247, 247, 247);
+
+  font-size: 20px;
+  box-shadow: 4px 4px 8px 0px rgba(12, 12, 12, 0.2);
 }
 
 ::backdrop {
