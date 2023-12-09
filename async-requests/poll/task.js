@@ -1,9 +1,31 @@
 class Poll {
+  card = document.querySelector('.card');
   container = document.querySelector('.poll');
+
   poll = null;
+  confirmElement = null;
 
   constructor() {
     this.getPoll();
+    this.registerEvents();
+  }
+
+  registerEvents() {
+    this.container.addEventListener('click', (event) => this.vote(event));
+  }
+
+  vote(event) {
+    const answerButton = event.target.closest('.poll__answer');
+    if (!answerButton) return;
+
+    this.showConfirmWindow();
+  }
+
+  closeConfirmWindow(event) {
+    const messageClose = event.target.closest('.confirm-button');
+    if (!messageClose) return;
+
+    this.confirmElement.remove();
   }
 
   async getPoll() {
@@ -29,6 +51,28 @@ class Poll {
     });
 
     return html;
+  }
+
+  showConfirmWindow() {
+    if (!this.confirmElement) {
+      const element = document.createElement('div');
+      element.classList.add('confirm');
+      element.innerHTML = `
+      <div class="confirm-message">
+      Спасибо, ваш голос засчитан!
+      </div>
+      <div class="confirm-controls">
+      <button class="confirm-button">Закрыть</button>
+      </div>
+      `;
+      this.confirmElement = element;
+
+      this.confirmElement.addEventListener('click', (event) =>
+        this.closeConfirmWindow(event)
+      );
+    }
+
+    this.card.append(this.confirmElement);
   }
 }
 
