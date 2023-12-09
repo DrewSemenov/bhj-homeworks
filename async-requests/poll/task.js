@@ -6,8 +6,13 @@ class Poll {
   confirmElement = null;
 
   constructor() {
+    this.startApp();
+  }
+
+  startApp() {
     this.getPoll();
     this.registerEvents();
+    this.createMessageElement();
   }
 
   registerEvents() {
@@ -21,18 +26,28 @@ class Poll {
     this.showConfirmWindow();
   }
 
+  showConfirmWindow() {
+    this.confirmElement.showModal();
+  }
+
   closeConfirmWindow(event) {
     const messageClose = event.target.closest('.confirm-button');
     if (!messageClose) return;
 
-    this.confirmElement.remove();
+    this.confirmElement.close();
+    this.getPoll();
   }
 
   async getPoll() {
     const url = 'https://students.netoservices.ru/nestjs-backend/poll';
     const response = await fetch(url);
-    this.poll = await response.json();
+    const poll = await response.json();
 
+    if (this.poll && this.poll.id === poll.id) {
+      this.getPoll();
+    }
+
+    this.poll = poll;
     this.renderPoll();
   }
 
@@ -53,26 +68,24 @@ class Poll {
     return html;
   }
 
-  showConfirmWindow() {
-    if (!this.confirmElement) {
-      const element = document.createElement('div');
-      element.classList.add('confirm');
-      element.innerHTML = `
+  createMessageElement() {
+    const element = document.createElement('dialog');
+    element.classList.add('confirm');
+    element.innerHTML = `
       <div class="confirm-message">
       Спасибо, ваш голос засчитан!
       </div>
       <div class="confirm-controls">
-      <button class="confirm-button">Закрыть</button>
+      <button class="confirm-button" autofocus>Закрыть</button>
       </div>
       `;
-      this.confirmElement = element;
 
-      this.confirmElement.addEventListener('click', (event) =>
-        this.closeConfirmWindow(event)
-      );
-    }
-
+    this.confirmElement = element;
     this.card.append(this.confirmElement);
+
+    this.confirmElement.addEventListener('click', (event) =>
+      this.closeConfirmWindow(event)
+    );
   }
 }
 
